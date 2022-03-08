@@ -1,12 +1,12 @@
 const path = require("path");
 const fs = require("fs").promises;
 
-async function getFilesDir(dir) {
+async function getFilesByDir(dir) {
   const dirents = await fs.readdir(dir, { withFileTypes: true });
   const files = await Promise.all(
     dirents.map((dirent) => {
       const res = path.resolve(dir, dirent.name);
-      return dirent.isDirectory() ? getFiles(res) : res;
+      return dirent.isDirectory() ? getFilesByDir(res) : res;
     })
   );
 
@@ -16,7 +16,7 @@ async function getFilesDir(dir) {
 async function returnSumByDir(dir) {
   try {
     const pathToShoppingDir = path.join(__dirname, dir);
-    const filesDir = Array.from(await getFilesDir(pathToShoppingDir));
+    const filesDir = Array.from(await getFilesByDir(pathToShoppingDir));
     let totalSum = 0;
 
     for (const fileDir of filesDir) {
