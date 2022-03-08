@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs").promises;
 
-async function getFiles(dir) {
+async function getFilesDir(dir) {
   const dirents = await fs.readdir(dir, { withFileTypes: true });
   const files = await Promise.all(
     dirents.map((dirent) => {
@@ -16,7 +16,7 @@ async function getFiles(dir) {
 async function returnSumByDir(dir) {
   try {
     const pathToShoppingDir = path.join(__dirname, dir);
-    const filesDir = Array.from(await getFiles(pathToShoppingDir));
+    const filesDir = Array.from(await getFilesDir(pathToShoppingDir));
     let totalSum = 0;
 
     for (const fileDir of filesDir) {
