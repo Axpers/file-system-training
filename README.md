@@ -5,6 +5,8 @@ None
 
 ## Run the application
 ```
-node build.js (only needed once)
+node build.js
+```
+```
 node index.js
 ```
