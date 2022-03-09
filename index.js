@@ -30,6 +30,29 @@ async function returnSumByDir(dir) {
   }
 }
 
-(async function main() {
-  console.log(await returnSumByDir("shopping"));
+async function writeExpensesByCategory(category, expense) {
+  const content = `Expenses by ${category} : ${expense}`;
+  const filePath = path.join("expenses", `totalBy${category}.txt`);
+
+  await fs.writeFile(path.join(__dirname, filePath), content);
+
+  console.log(`Expenses for ${category} successfully written`);
+}
+
+(async () => {
+  try {
+    const dirents = (
+      await fs.readdir(__dirname, { withFileTypes: true })
+    ).filter((dir) => {
+      return dir.isDirectory() && !dir.name.includes(".");
+    });
+
+    await fs.mkdir("expenses");
+
+    dirents.forEach(async (dirent) => {
+      writeExpensesByCategory(dirent.name, await returnSumByDir(dirent.name));
+    });
+  } catch (err) {
+    console.error(err);
+  }
 })();
