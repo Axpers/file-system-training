@@ -1,12 +1,21 @@
 # File system training
 
-## Installation
+## Installation :
 None
 
-## Run the application
+## Running the appplication :
 ```
 node build.js
 ```
 ```
 node index.js
 ```
+
+## About this application : 
+A short pick up to NodeJS's file system api
+
+Methods used :
+- readdir
+- readFile
+- writeFile
+- mkdir
