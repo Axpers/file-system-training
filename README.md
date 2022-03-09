@@ -3,7 +3,7 @@
 ## Installation :
 None
 
-## Running :
+## Run :
 ```
 node build.js
 ```
