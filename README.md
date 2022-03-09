@@ -3,7 +3,7 @@
 ## Installation :
 None
 
-## Running the appplication :
+## Running :
 ```
 node build.js
 ```
@@ -11,7 +11,7 @@ node build.js
 node index.js
 ```
 
-## About this application : 
+## About : 
 A short pick up to NodeJS's file system api
 
 Methods used :
