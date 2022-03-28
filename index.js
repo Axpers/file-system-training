@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs").promises;
+const build = require("./build");
 
 async function getFilesByDir(dir) {
   const dirents = await fs.readdir(dir, { withFileTypes: true });
@@ -39,8 +40,10 @@ async function writeExpensesByCategory(category, expense) {
   console.log(`Expenses for ${category} successfully written`);
 }
 
-(async () => {
+async function main() {
   try {
+    await build();
+
     const dirents = (
       await fs.readdir(__dirname, { withFileTypes: true })
     ).filter((dir) => {
@@ -55,4 +58,6 @@ async function writeExpensesByCategory(category, expense) {
   } catch (err) {
     console.error(err);
   }
-})();
+}
+
+main();
