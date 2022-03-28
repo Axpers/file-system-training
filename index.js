@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs").promises;
+const fsSync = require("fs");
 const build = require("./build");
 
 async function getFilesByDir(dir) {
@@ -40,9 +41,26 @@ async function writeExpensesByCategory(category, expense) {
   console.log(`Expenses for ${category} successfully written`);
 }
 
+async function createOrDeleteIfDirsExist() {
+  const dirToCheck = ["shopping", "vacations", "expenses"];
+  const dirsExist = dirToCheck.some((dir) => {
+    return fsSync.existsSync(dir);
+  });
+
+  if (!dirsExist) {
+    await build();
+  } else {
+    dirToCheck.forEach((dir) => {
+      if (fsSync.existsSync(dir))
+        fsSync.rmSync(dir, { recursive: true, force: true });
+    });
+    await build();
+  }
+}
+
 async function main() {
   try {
-    await build();
+    await createOrDeleteIfDirsExist();
 
     const dirents = (
       await fs.readdir(__dirname, { withFileTypes: true })
