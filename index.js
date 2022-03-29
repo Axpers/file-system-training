@@ -3,6 +3,23 @@ const fs = require("fs").promises;
 const fsSync = require("fs");
 const build = require("./build");
 
+async function createOrDeleteIfDirsExist() {
+  const dirToCheck = ["shopping", "vacations", "expenses"];
+  const dirsExist = dirToCheck.some((dir) => {
+    return fsSync.existsSync(dir);
+  });
+
+  if (!dirsExist) {
+    await build();
+  } else {
+    dirToCheck.forEach((dir) => {
+      if (fsSync.existsSync(dir))
+        fsSync.rmSync(dir, { recursive: true, force: true });
+    });
+    await build();
+  }
+}
+
 async function getFilesByDir(dir) {
   const dirents = await fs.readdir(dir, { withFileTypes: true });
   const files = await Promise.all(
@@ -15,7 +32,7 @@ async function getFilesByDir(dir) {
   return Array.prototype.concat(...files);
 }
 
-async function returnSumByDir(dir) {
+async function returnExpensesByCategory(dir) {
   try {
     const pathToShoppingDir = path.join(__dirname, dir);
     const filesDir = Array.from(await getFilesByDir(pathToShoppingDir));
@@ -41,23 +58,6 @@ async function writeExpensesByCategory(category, expense) {
   console.log(`Expenses for ${category} successfully written`);
 }
 
-async function createOrDeleteIfDirsExist() {
-  const dirToCheck = ["shopping", "vacations", "expenses"];
-  const dirsExist = dirToCheck.some((dir) => {
-    return fsSync.existsSync(dir);
-  });
-
-  if (!dirsExist) {
-    await build();
-  } else {
-    dirToCheck.forEach((dir) => {
-      if (fsSync.existsSync(dir))
-        fsSync.rmSync(dir, { recursive: true, force: true });
-    });
-    await build();
-  }
-}
-
 async function main() {
   try {
     await createOrDeleteIfDirsExist();
@@ -71,7 +71,10 @@ async function main() {
     await fs.mkdir("expenses");
 
     dirents.forEach(async (dirent) => {
-      writeExpensesByCategory(dirent.name, await returnSumByDir(dirent.name));
+      writeExpensesByCategory(
+        dirent.name,
+        await returnExpensesByCategory(dirent.name)
+      );
     });
   } catch (err) {
     console.error(err);
